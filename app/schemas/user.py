@@ -6,7 +6,7 @@ from datetime import datetime
 class UserBase(BaseModel):
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=50)
-    role: str = "customer"  # значение по умолчанию
+    user_role: str = "customer"  # значение по умолчанию
 
 # Схема для регистрации — добавляет пароль
 class UserCreate(UserBase):
@@ -19,7 +19,7 @@ class UserLogin(BaseModel):
 
 # Схема для ответа — все поля, которые мы отдаём клиенту (без пароля)
 class UserResponse(UserBase):
-    id: int
+    user_id: int
     voucher_balance: int
     is_active: bool
     created_at: datetime

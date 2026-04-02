@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Optional
 
 class PurchaseBase(BaseModel):
+    user_id: int
+    voucher_type_id: int
     voucher_count: int = Field(..., gt=0, le=100, description="Количество талонов (от 1 до 100)")
 
 class PurchaseCreate(PurchaseBase):

@@ -18,7 +18,7 @@ else:
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+Base = declarative_base() #здесь будут все мои таблички. В нужный момент я создам их через Base
 
 def get_db():
     db = SessionLocal()

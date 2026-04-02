@@ -50,8 +50,8 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     db_user = User(
         email=user_data.email,
         username=user_data.username,
-        hashed_password=hashed_password,
-        role=user_data.role  # role приходит из схемы, по умолчанию "customer"
+        password=hashed_password,
+        user_role=user_data.user_role  # role приходит из схемы, по умолчанию "customer"
     )
     
     # Сохраняем в базу
@@ -65,7 +65,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login", response_model = Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == form_data.username).first()
-    if not(user) or not(verify_password(form_data.password, user.hashed_password)):
+    if not(user) or not(verify_password(form_data.password, user.password)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
