@@ -58,7 +58,7 @@ async def get_voucher_type_by_id(
     """
     Получение вида талона по ID.
     """
-    voucher_type = db.query(VoucherType).filter(VoucherType.vouch_type_id == voucher_type_id).first()
+    voucher_type = db.query(VoucherType).filter(VoucherType.voucher_type_id == voucher_type_id).first()
     if not voucher_type:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -86,7 +86,7 @@ async def update_voucher_type(
         )
     
     # Находим вид талона
-    voucher_type = db.query(VoucherType).filter(VoucherType.vouch_type_id == voucher_type_id).first()
+    voucher_type = db.query(VoucherType).filter(VoucherType.voucher_type_id == voucher_type_id).first()
     if not voucher_type:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -98,7 +98,7 @@ async def update_voucher_type(
         # Проверяем, не занято ли новое имя
         existing = db.query(VoucherType).filter(
             VoucherType.voucher_name == voucher_type_data.voucher_name,
-            VoucherType.vouch_type_id != voucher_type_id
+            VoucherType.voucher_type_id != voucher_type_id
         ).first()
         if existing:
             raise HTTPException(
@@ -137,7 +137,7 @@ async def delete_voucher_type(
         )
     
     # Находим вид талона
-    voucher_type = db.query(VoucherType).filter(VoucherType.vouch_type_id == voucher_type_id).first()
+    voucher_type = db.query(VoucherType).filter(VoucherType.voucher_type_id == voucher_type_id).first()
     if not voucher_type:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

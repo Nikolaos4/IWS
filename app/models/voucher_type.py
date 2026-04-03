@@ -5,7 +5,7 @@ from app.db.database import Base
 
 class VoucherType(Base):
     __tablename__ = "voucher_types"
-    vouch_type_id = Column(Integer, primary_key=True, index=True)
+    voucher_type_id = Column(Integer, primary_key=True, index=True)
     voucher_name = Column(String, nullable=False)
     discount = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False)

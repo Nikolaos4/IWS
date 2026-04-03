@@ -4,13 +4,12 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.user import User
 from app.models.purchase import Purchase
+from app.models.voucher_type import VoucherType
 from app.schemas.purchase import PurchaseCreate, PurchaseResponse
 from app.api.auth import get_current_user
 
 router = APIRouter(prefix="/purchases", tags=["purchases"])
 
-# Цена одного талона в копейках (100 рублей = 10000 копеек)
-PRICE_PER_VOUCHER = 10000  # 100 рублей
 
 @router.post("", response_model=PurchaseResponse, status_code=status.HTTP_201_CREATED)
 async def create_purchase(
@@ -27,18 +26,30 @@ async def create_purchase(
     """
     
     # Проверяем, что пользователь — покупатель (не магазин)
-    if current_user.role != "customer":
+    if current_user.user_role != "customer":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only customers can purchase vouchers"
         )
     
+
+    voucher_type = db.query(VoucherType).filter(VoucherType.voucher_type_id == purchase_data.voucher_type_id).first()
+    
+    if not voucher_type:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Voucher type not found"
+        )
+    
+    total_price = voucher_type.price * purchase_data.voucher_count
+
     # Создаём запись о покупке
     db_purchase = Purchase(
-        user_id=current_user.id,
+        user_id=current_user.user_id,
+        voucher_type_id=purchase_data.voucher_type_id,
         voucher_count=purchase_data.voucher_count,
-        price=purchase_data.voucher_count * PRICE_PER_VOUCHER,
-        status="completed"
+        all_price=total_price,
+        period=30 # временно, потом добавим выбор срока
     )
     
     # Обновляем баланс пользователя

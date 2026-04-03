@@ -16,7 +16,7 @@ class VoucherTypeUpdate(BaseModel):
     price: Optional[int] = Field(None, gt=0)
 
 class VoucherTypeResponse(VoucherTypeBase):
-    vouch_type_id: int
+    voucher_type_id: int
     created_by: int
     created_at: datetime
     
