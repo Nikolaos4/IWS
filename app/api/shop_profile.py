@@ -4,8 +4,13 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.user import User
 from app.models.shop_profile import ShopProfile
+from app.models.shop_voucher_type import ShopVoucherType
+from app.models.voucher_type import VoucherType
 from app.schemas.shop_profile import CreateShopProfile, ShopProfileResponse
+from app.schemas.voucher_type import VoucherTypeResponse
 from app.api.auth import get_current_user
+
+from typing import List
 
 router = APIRouter(prefix="/shop_profile", tags=["shop_profile"])
 
@@ -40,3 +45,25 @@ async def create_shop_profile(
     db.refresh(db_shop_profile)
 
     return db_shop_profile
+
+
+
+@router.get("/{shop_id}", response_model=List[VoucherTypeResponse])
+async def get_shop_vouchers(
+    shop_id: int,
+    db: Session = Depends(get_db)
+):
+    current_shop = db.query(ShopProfile).filter(ShopProfile.shop_id == shop_id).first()
+    if not(current_shop):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Shop not found"
+        )
+    
+    shop_voucher_types = db.query(ShopVoucherType).filter(ShopVoucherType.shop_id == shop_id).all()
+
+    voucher_type_ids = [svt.voucher_type_id for svt in shop_voucher_types]
+
+    all_voucher_types = db.query(VoucherType).filter(VoucherType.voucher_type_id.in_(voucher_type_ids)).all()
+
+    return all_voucher_types

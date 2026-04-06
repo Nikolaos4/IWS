@@ -20,7 +20,7 @@ async def add_voucher_types_to_shop(
     if current_user.user_role != "shop":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only shop can choose a profile"
+            detail="Only shop can choose a voucher"
         )
     
     user_shop = db.query(ShopProfile).filter(ShopProfile.user_id == current_user.user_id).first()
