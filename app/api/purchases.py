@@ -5,6 +5,8 @@ from app.db.database import get_db
 from app.models.user import User
 from app.models.purchase import Purchase
 from app.models.voucher_type import VoucherType
+from app.models.user_balance import UserBalance
+from app.models.voucher_pasport import VoucherPasport
 from app.schemas.purchase import PurchaseCreate, PurchaseResponse
 from app.api.auth import get_current_user
 
@@ -40,23 +42,39 @@ async def create_purchase(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Voucher type not found"
         )
-    
-    total_price = voucher_type.price * purchase_data.voucher_count
 
     # Создаём запись о покупке
     db_purchase = Purchase(
         user_id=current_user.user_id,
         voucher_type_id=purchase_data.voucher_type_id,
-        voucher_count=purchase_data.voucher_count,
-        all_price=total_price,
         period=30 # временно, потом добавим выбор срока
     )
-    
-    # Обновляем баланс пользователя
-    current_user.voucher_balance += purchase_data.voucher_count
-    
-    # Сохраняем изменения в БД
     db.add(db_purchase)
+    db.flush()
+    for i in range(purchase_data.voucher_count):
+        db_voucher_pasport = VoucherPasport(
+            purchase_id=db_purchase.purchase_id
+        )
+        db.add(db_voucher_pasport)
+
+    # Обновляем баланс пользователя
+    user_balance = db.query(UserBalance).filter(
+        UserBalance.user_id == current_user.user_id,
+        UserBalance.voucher_type_id == purchase_data.voucher_type_id
+    ).first()
+
+    if user_balance:
+        user_balance.voucher_count += purchase_data.voucher_count
+
+    else:
+        db_balance = UserBalance(
+            user_id=current_user.user_id,
+            voucher_type_id=purchase_data.voucher_type_id,
+            voucher_count=purchase_data.voucher_count
+        )
+        db.add(db_balance)   
+
+    # Сохраняем изменения в БД
     db.commit()
     db.refresh(db_purchase)
     

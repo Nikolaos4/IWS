@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.database import engine, Base
-from app.models import user, voucher_type, purchase, shop_voucher_type  
-from app.api import auth_router, users_router, purchases_router, vouchers_router, voucher_types_router, shop_profile_router, choose_voucher_router
+from app.models import user, voucher_type, purchase, shop_voucher_type, user_balance, voucher_pasport, order
+from app.api import auth_router, users_router, purchases_router, vouchers_router, voucher_types_router, shop_profile_router, choose_voucher_router, voucher_pasport_router, order_router
 
 # Создаём таблицы в базе данных (только для разработки!)
 # Если таблицы уже существуют, они не будут пересозданы
@@ -39,6 +39,8 @@ app.include_router(vouchers_router, prefix="/api/v1")
 app.include_router(voucher_types_router, prefix="/api/v1")
 app.include_router(shop_profile_router, prefix="/api/v1")
 app.include_router(choose_voucher_router, prefix="/api/v1")
+app.include_router(voucher_pasport_router, prefix="/api/v1")
+app.include_router(order_router, prefix="/api/v1")
 
 # Корневой эндпоинт (проверка, что сервер работает)
 @app.get("/")

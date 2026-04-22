@@ -20,7 +20,6 @@ class UserLogin(BaseModel):
 # Схема для ответа — все поля, которые мы отдаём клиенту (без пароля)
 class UserResponse(UserBase):
     user_id: int
-    voucher_balance: int
     is_active: bool
     created_at: datetime
     updated_at: datetime

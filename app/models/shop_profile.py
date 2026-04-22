@@ -13,3 +13,4 @@ class ShopProfile(Base):
     
     user = relationship("User", back_populates="shop_profile")
     shop_voucher_type = relationship("ShopVoucherType", back_populates="shop_profile")
+    order = relationship("Order", back_populates="shop")

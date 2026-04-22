@@ -15,4 +15,5 @@ class VoucherType(Base):
     user = relationship("User", back_populates="voucher_types")
     purchases = relationship("Purchase", back_populates="voucher_type")
     shop_voucher_type = relationship("ShopVoucherType", back_populates="voucher_type")
+    user_balance = relationship("UserBalance", back_populates="voucher_type")
 

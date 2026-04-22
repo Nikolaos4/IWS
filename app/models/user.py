@@ -13,10 +13,12 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     user_role = Column(String, default="customer")
     is_active = Column(Boolean, default=True)
-    voucher_balance = Column(Integer, default=0)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
         
     purchases = relationship("Purchase", back_populates="user")
     voucher_types = relationship("VoucherType", back_populates="user")
     shop_profile = relationship("ShopProfile", back_populates="user")
+    user_balance = relationship("UserBalance", back_populates="user")
+    order = relationship("Order", back_populates="user")
+    
