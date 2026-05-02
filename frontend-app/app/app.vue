@@ -1,9 +1,8 @@
 <template>
     <Header />
-    <main>
-        <NuxtRouteAnnouncer />
+    <NuxtLayout>
         <NuxtPage />
-    </main>
+    </NuxtLayout>
 </template>
 <style lang="scss">
 @use "./assets/scss/app";

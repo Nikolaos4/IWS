@@ -25,7 +25,11 @@
 <script lang="ts" setup>
 import z from "zod";
 
-const api = useApi();
+definePageMeta({
+    layout: "auth",
+});
+
+const auth = useAuthStore();
 
 const models = {
     email: {
@@ -49,20 +53,16 @@ const schemas = {
 };
 
 async function onSubmit() {
-    try {
-        const response = await api.POST("/api/v1/auth/register", {
-            body: {
-                email: models.email.value,
-                password: models.password.value,
-                username: models.username.value,
-                user_role: "customer",
-            },
-        });
-        if (!response.error && response.data) {
-            console.log(response.data);
-        }
-    } catch (error) {
-        console.error(error);
+    const result = await auth.register({
+        username: models.username.value,
+        email: models.email.value,
+        password: models.password.value,
+    });
+    if (result.ok) {
+        alert("Аккаунт успешно создан. Теперь вы можете войти");
+        useRouter().push("/login");
+    } else {
+        console.error(result.error);
     }
 }
 </script>

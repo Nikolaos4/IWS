@@ -20,7 +20,11 @@
 <script lang="ts" setup>
 import z from "zod";
 
-const api = useApi();
+definePageMeta({
+    layout: "auth",
+});
+
+const auth = useAuthStore();
 
 const models = {
     username: {
@@ -39,21 +43,15 @@ const schemas = {
 };
 
 async function onSubmit() {
-    try {
-        const fd = new FormData();
-        fd.append("username", models.username.value);
-        fd.append("password", models.password.value);
+    const result = await auth.login({
+        username: models.username.value,
+        password: models.password.value,
+    });
 
-        const response = await api.POST("/api/v1/auth/login", {
-            // TODO заменить formdata на json
-            // @ts-ignore
-            body: fd,
-        });
-        if (!response.error && response.data) {
-            console.log(response.data);
-        }
-    } catch (error) {
-        console.error(error);
+    if (result.ok) {
+        navigateTo("/my");
+    } else {
+        console.error(result.error);
     }
 }
 </script>
