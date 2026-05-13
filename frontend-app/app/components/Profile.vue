@@ -1,16 +1,13 @@
 <template>
-    <div class="profile-card">
-        <h2>Привет, {{ user?.username }}!</h2>
-        <div class="box">
-            <h3>Данные</h3>
-            <div class="field">
-                <div class="label">Почта:</div>
-                <div class="value">{{ user?.email }}</div>
-            </div>
-            <div class="field">
-                <div class="label">Роль:</div>
-                <div class="value">{{ user?.user_role }}</div>
-            </div>
+    <div class="box">
+        <h3>Данные</h3>
+        <div class="field">
+            <div class="label">Почта:</div>
+            <div class="value">{{ user?.email }}</div>
+        </div>
+        <div class="field">
+            <div class="label">Роль:</div>
+            <div class="value">{{ user?.user_role }}</div>
         </div>
     </div>
 </template>
@@ -34,7 +31,4 @@ try {
 </script>
 <style lang="scss" scoped>
 @use "@/assets/scss/profile.scss";
-.profile-card {
-    padding: 32px;
-}
 </style>

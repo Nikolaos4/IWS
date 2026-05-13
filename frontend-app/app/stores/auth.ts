@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
 import { useApi } from "~/composables/useApi";
 
 export const useAuthStore = defineStore("auth", () => {
@@ -8,7 +7,12 @@ export const useAuthStore = defineStore("auth", () => {
     const token = ref<string | null>(localStorage.getItem("access_token"));
     const currentUser = ref<any | null>(null);
 
-    const isAuthenticated = computed(() => !!token.value);
+    const isAuthenticated = ref(false);
+
+    let _initResolve: () => void;
+    const initPromise = new Promise<void>((resolve) => {
+        _initResolve = resolve;
+    });
 
     function setToken(t: string | null) {
         token.value = t;
@@ -23,9 +27,11 @@ export const useAuthStore = defineStore("auth", () => {
         try {
             const data = await api.GET("/api/v1/users/me");
             currentUser.value = data;
+            isAuthenticated.value = true;
             return { ok: true, data };
         } catch (error) {
             currentUser.value = null;
+            isAuthenticated.value = false;
             return { ok: false, error };
         }
     }
@@ -70,16 +76,23 @@ export const useAuthStore = defineStore("auth", () => {
     async function logout() {
         setToken(null);
         currentUser.value = null;
+        isAuthenticated.value = false;
     }
 
-    if (token.value) {
-        loadCurrentUser();
+    async function init() {
+        if (token.value) {
+            await loadCurrentUser();
+        }
+        _initResolve();
     }
+
+    init();
 
     return {
         token,
         currentUser,
         isAuthenticated,
+        initPromise,
         login,
         register,
         logout,

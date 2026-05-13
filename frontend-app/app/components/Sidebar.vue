@@ -16,12 +16,14 @@ nav {
     display: flex;
     flex-direction: column;
     background-color: var(--color-background-secondary);
+    border-radius: 0 16px 0 0;
     height: calc(100vh - 50px);
     min-width: 250px;
 
     ul {
         list-style: none;
         padding: 0;
+        margin: 0;
         padding: 8px;
 
         &.bottom-links {

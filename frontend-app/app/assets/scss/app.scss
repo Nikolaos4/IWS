@@ -16,3 +16,12 @@ a {
 .app {
     display: flex;
 }
+
+.page {
+    padding: 32px;
+}
+
+::selection {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+}
