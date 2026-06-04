@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from app.db.database import get_db
 from app.models.user import User
@@ -37,13 +37,20 @@ async def make_order(
         )
     
     purch_of_voucher = db.query(Purchase).filter(Purchase.purchase_id == current_voucher_pasport.purchase_id).first()
-    if (purch_of_voucher.user_id != current_user.user_id) :
-        raise HTTPException (
+    if purch_of_voucher.user_id != current_user.user_id:
+        raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have this voucher"
         )
 
-    type_of_voucher = purch_of_voucher.voucher_type_id;
+    expires_at = purch_of_voucher.created_at.replace(tzinfo=timezone.utc) + timedelta(days=purch_of_voucher.period)
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Voucher has expired"
+        )
+
+    type_of_voucher = purch_of_voucher.voucher_type_id
 
     #Логика для магазина
     shop_voucher = db.query(ShopVoucherType).filter(

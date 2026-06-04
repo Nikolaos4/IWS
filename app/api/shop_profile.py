@@ -14,6 +14,16 @@ from typing import List
 
 router = APIRouter(prefix="/shop_profile", tags=["shop_profile"])
 
+
+@router.get("", response_model=List[ShopProfileResponse])
+async def get_all_shops(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    shops = db.query(ShopProfile).offset(skip).limit(limit).all()
+    return shops
+
 @router.post("", response_model=ShopProfileResponse, status_code=status.HTTP_201_CREATED)
 async def create_shop_profile(
     shop_data: CreateShopProfile,

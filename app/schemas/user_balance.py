@@ -1,9 +1,12 @@
 from pydantic import BaseModel
 
-class BalanceBase(BaseModel):
-    user_id: int;
+class BalanceItem(BaseModel):
+    user_balance_id: int
     voucher_type_id: int
-    voucher_counter: int
+    voucher_count: int
 
-class BalanceResponse(BalanceBase):
-    pass
+    class Config:
+        from_attributes = True
+
+class BalanceResponse(BaseModel):
+    balances: list[BalanceItem]
