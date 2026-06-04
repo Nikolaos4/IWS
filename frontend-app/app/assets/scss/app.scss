@@ -5,4 +5,23 @@ body {
     margin: 0;
     font-family: "Inter", sans-serif;
     line-height: 1.5;
+    color: var(--color-text);
+    background-color: var(--color-background);
+}
+
+a {
+    color: var(--color-primary);
+}
+
+.app {
+    display: flex;
+}
+
+.page {
+    padding: 32px;
+}
+
+::selection {
+    background-color: var(--color-primary);
+    color: var(--color-background);
 }

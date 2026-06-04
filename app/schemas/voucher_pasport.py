@@ -5,3 +5,6 @@ class VoucherPasportResponse(BaseModel):
     voucher_pasport_id: int = Field(...)
     purchase_id: int = Field(...)
     order_id: Optional[int] = None
+
+    class Config:
+        from_attributes = True

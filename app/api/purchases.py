@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from typing import List
 
 from app.db.database import get_db
 from app.models.user import User
@@ -11,6 +12,15 @@ from app.schemas.purchase import PurchaseCreate, PurchaseResponse
 from app.api.auth import get_current_user
 
 router = APIRouter(prefix="/purchases", tags=["purchases"])
+
+
+@router.get("/my", response_model=List[PurchaseResponse])
+async def get_my_purchases(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    purchases = db.query(Purchase).filter(Purchase.user_id == current_user.user_id).all()
+    return purchases
 
 
 @router.post("", response_model=PurchaseResponse, status_code=status.HTTP_201_CREATED)
