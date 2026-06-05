@@ -12,9 +12,8 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str = Field(..., min_length=6)
 
-# Схема для входа (отдельно, так как не нужен email и роль)
-class UserLogin(BaseModel):
-    username: str
+class LoginRequest(BaseModel):
+    email: EmailStr
     password: str
 
 # Схема для ответа — все поля, которые мы отдаём клиенту (без пароля)

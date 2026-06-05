@@ -5,9 +5,10 @@
             class="auth-form"
             @submit.prevent="onSubmit">
             <UiInput
-                v-model="models.username"
-                :schema="schemas.username"
-                placeholder="Логин" />
+                v-model="models.email"
+                :schema="schemas.email"
+                placeholder="Email"
+                type="email" />
             <UiInput
                 v-model="models.password"
                 :schema="schemas.password"
@@ -27,7 +28,7 @@ definePageMeta({
 const auth = useAuthStore();
 
 const models = {
-    username: {
+    email: {
         value: "",
         error: "",
     },
@@ -38,13 +39,13 @@ const models = {
 };
 
 const schemas = {
-    username: z.string(),
+    email: z.string().email(),
     password: z.string(),
 };
 
 async function onSubmit() {
     const result = await auth.login({
-        username: models.username.value,
+        email: models.email.value,
         password: models.password.value,
     });
 

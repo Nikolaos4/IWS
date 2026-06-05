@@ -3,6 +3,7 @@ from typing import Optional
 from jose import JWTError, jwt
 from app.core.config import settings
 import bcrypt
+import secrets
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
@@ -27,3 +28,6 @@ def decode_token(token: str) -> Optional[dict]:
         return payload
     except JWTError:
         return None
+
+def create_refresh_token() -> str:
+    return secrets.token_urlsafe(64)

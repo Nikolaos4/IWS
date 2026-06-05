@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db.database import engine, Base
-from app.models import user, voucher_type, purchase, shop_voucher_type, user_balance, voucher_pasport, order
+from app.core.config import settings
+from app.models import user, voucher_type, purchase, shop_voucher_type, user_balance, voucher_pasport, order, refresh_token
 from app.api import auth_router, users_router, purchases_router, vouchers_router, voucher_types_router, shop_profile_router, news_router, choose_voucher_router, voucher_pasport_router, order_router
 
 
@@ -25,10 +26,10 @@ app = FastAPI(
 # Разрешает фронтенду (например, React приложению) обращаться к нашему API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # В продакшене заменить на конкретные домены!
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],        # Разрешаем все HTTP методы
-    allow_headers=["*"],        # Разрешаем все заголовки
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Подключаем роутеры с префиксом /api/v1

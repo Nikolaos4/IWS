@@ -13,15 +13,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Register
-         * @description Регистрация нового пользователя.
-         *
-         *     - Проверяет, что email и username не заняты
-         *     - Хеширует пароль
-         *     - Сохраняет пользователя в базу
-         *     - Возвращает данные пользователя (без пароля)
-         */
+        /** Register */
         post: operations["register_api_v1_auth_register_post"];
         delete?: never;
         options?: never;
@@ -46,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refresh */
+        post: operations["refresh_api_v1_auth_refresh_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/logout": {
         parameters: {
             query?: never;
@@ -55,13 +64,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Logout
-         * @description Выход из системы.
-         *
-         *     JWT токены не могут быть отозваны на сервере без черного списка.
-         *     Клиент должен просто удалить токен.
-         */
+        /** Logout */
         post: operations["logout_api_v1_auth_logout_post"];
         delete?: never;
         options?: never;
@@ -76,13 +79,42 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Read Users Me
-         * @description Получить информацию о текущем пользователе.
-         *
-         *     Требует авторизации (токен в заголовке Authorization).
-         */
+        /** Read Users Me */
         get: operations["read_users_me_api_v1_users_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Balance */
+        get: operations["get_my_balance_api_v1_users_me_balance_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/purchases/my": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Purchases */
+        get: operations["get_my_purchases_api_v1_purchases_my_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -185,7 +217,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get All Shops */
+        get: operations["get_all_shops_api_v1_shop_profile_get"];
         put?: never;
         /** Create Shop Profile */
         post: operations["create_shop_profile_api_v1_shop_profile_post"];
@@ -277,6 +310,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/voucher_pasport/my": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get My Voucher Pasports */
+        get: operations["get_my_voucher_pasports_api_v1_voucher_pasport_my_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/voucher_pasport": {
         parameters: {
             query?: never;
@@ -284,8 +334,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Voucher Pasports */
-        get: operations["get_voucher_pasports_api_v1_voucher_pasport_get"];
+        /** Get All Voucher Pasports */
+        get: operations["get_all_voucher_pasports_api_v1_voucher_pasport_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -349,38 +399,19 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** BalanceResponse */
-        BalanceResponse: {
-            /** User Id */
-            user_id: number;
+        /** BalanceItem */
+        BalanceItem: {
+            /** User Balance Id */
+            user_balance_id: number;
             /** Voucher Type Id */
             voucher_type_id: number;
-            /** Voucher Counter */
-            voucher_counter: number;
+            /** Voucher Count */
+            voucher_count: number;
         };
-        /** Body_login_api_v1_auth_login_post */
-        Body_login_api_v1_auth_login_post: {
-            /** Grant Type */
-            grant_type?: string | null;
-            /** Username */
-            username: string;
-            /**
-             * Password
-             * Format: password
-             */
-            password: string;
-            /**
-             * Scope
-             * @default
-             */
-            scope: string;
-            /** Client Id */
-            client_id?: string | null;
-            /**
-             * Client Secret
-             * Format: password
-             */
-            client_secret?: string | null;
+        /** BalanceResponse */
+        BalanceResponse: {
+            /** Balances */
+            balances: components["schemas"]["BalanceItem"][];
         };
         /** ChooseShopVoucherType */
         ChooseShopVoucherType: {
@@ -415,6 +446,16 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** LoginRequest */
+        LoginRequest: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Password */
+            password: string;
         };
         /** NewsCreate */
         NewsCreate: {
@@ -528,13 +569,6 @@ export interface components {
             shop_id: number;
             /** Added Vouchers */
             added_vouchers: components["schemas"]["ShopVoucherTypeItem"][];
-        };
-        /** Token */
-        Token: {
-            /** Access Token */
-            access_token: string;
-            /** Token Type */
-            token_type: string;
         };
         /** UserCreate */
         UserCreate: {
@@ -703,7 +737,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/x-www-form-urlencoded": components["schemas"]["Body_login_api_v1_auth_login_post"];
+                "application/json": components["schemas"]["LoginRequest"];
             };
         };
         responses: {
@@ -713,7 +747,38 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Token"];
+                    "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    refresh_api_v1_auth_refresh_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                refresh_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponse"];
                 };
             };
             /** @description Validation Error */
@@ -732,17 +797,26 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                refresh_token?: string | null;
+            };
         };
         requestBody?: never;
         responses: {
             /** @description Successful Response */
-            200: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -752,7 +826,9 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody?: never;
         responses: {
@@ -765,6 +841,77 @@ export interface operations {
                     "application/json": components["schemas"]["UserResponse"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_balance_api_v1_users_me_balance_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BalanceItem"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_my_purchases_api_v1_purchases_my_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
     create_purchase_api_v1_purchases_post: {
@@ -772,7 +919,9 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody: {
             content: {
@@ -805,7 +954,9 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody?: never;
         responses: {
@@ -816,6 +967,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BalanceResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -857,7 +1017,9 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody: {
             content: {
@@ -923,7 +1085,9 @@ export interface operations {
             path: {
                 voucher_type_id: number;
             };
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody: {
             content: {
@@ -958,7 +1122,9 @@ export interface operations {
             path: {
                 voucher_type_id: number;
             };
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody?: never;
         responses: {
@@ -980,12 +1146,46 @@ export interface operations {
             };
         };
     };
+    get_all_shops_api_v1_shop_profile_get: {
+        parameters: {
+            query?: {
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopProfileResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     create_shop_profile_api_v1_shop_profile_post: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody: {
             content: {
@@ -1069,7 +1269,9 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody: {
             content: {
@@ -1104,7 +1306,9 @@ export interface operations {
             path: {
                 news_id: number;
             };
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody?: never;
         responses: {
@@ -1133,7 +1337,9 @@ export interface operations {
             path: {
                 news_id: number;
             };
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody: {
             content: {
@@ -1166,7 +1372,9 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody: {
             content: {
@@ -1194,12 +1402,16 @@ export interface operations {
             };
         };
     };
-    get_voucher_pasports_api_v1_voucher_pasport_get: {
+    get_my_voucher_pasports_api_v1_voucher_pasport_my_get: {
         parameters: {
-            query?: never;
+            query?: {
+                used?: boolean;
+            };
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody?: never;
         responses: {
@@ -1212,6 +1424,46 @@ export interface operations {
                     "application/json": components["schemas"]["VoucherPasportResponse"][];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_all_voucher_pasports_api_v1_voucher_pasport_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoucherPasportResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
     make_order_api_v1_order_post: {
@@ -1219,7 +1471,9 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
-            cookie?: never;
+            cookie?: {
+                access_token?: string | null;
+            };
         };
         requestBody: {
             content: {
